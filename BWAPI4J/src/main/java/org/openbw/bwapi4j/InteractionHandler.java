@@ -190,15 +190,15 @@ public final class InteractionHandler {
         return getKeyState(key.getValue());
     }
 
+    public void sendTextAndLog(String text) {
+
+        logger.info(text);
+        sendText(text);
+    }
+
     private native boolean getKeyState(int keyCode);
 
     public native void leaveGame();
-
-    public void sendTextAndLog(String text) {
-    
-    	logger.info(text);
-    	sendText(text);
-    }
 
     public native void printf(String text);
 

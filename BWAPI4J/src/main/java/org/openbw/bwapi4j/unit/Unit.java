@@ -3,13 +3,10 @@ package org.openbw.bwapi4j.unit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openbw.bwapi4j.*;
+import org.openbw.bwapi4j.command.CommandMediator;
 import org.openbw.bwapi4j.type.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Unit implements Comparable<Unit> {
@@ -481,7 +478,11 @@ public abstract class Unit implements Comparable<Unit> {
     }
 
     protected boolean issueCommand(int unitId, UnitCommandType unitCommandType, int targetUnitId, int x, int y, int extra) {
-        if (issueCommand(unitId, unitCommandType.ordinal(), targetUnitId, x, y, extra)) {
+        Optional<Boolean> maybeSuccess = CommandMediator.CommandMediator.publishBlocking((BW game) ->
+            Optional.of(issueCommand(unitId, unitCommandType.ordinal(), targetUnitId, x, y, extra))
+        );
+
+        if (maybeSuccess.isPresent() && maybeSuccess.get()) {
             lastCommandFrame = getCurrentFrame();
             lastCommand = unitCommandType;
             return true;
